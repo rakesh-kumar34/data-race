@@ -2,6 +2,8 @@
 
 **You are the thread scheduler. Break real concurrent code — then prove your fix.**
 
+**▶ Play it: [d2nttxdogi81n7.cloudfront.net](https://d2nttxdogi81n7.cloudfront.net)**
+
 Data Race is an interactive game that teaches concurrency the way production teaches it: by letting things go wrong. Every level is a tiny concurrent program with a classic bug — lost updates, check-then-act races, vanishing money, deadlock. You control the interleaving, one instruction at a time.
 
 Each level has two phases:
