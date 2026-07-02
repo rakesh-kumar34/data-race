@@ -13,6 +13,7 @@ import {
   applyPatches,
 } from '../engine';
 import { saveLevel } from '../progress';
+import WaitsForGraph from './WaitsForGraph';
 
 const THREAD_COLORS = ['#f59e0b', '#38bdf8', '#a78bfa'];
 
@@ -213,15 +214,7 @@ export default function Play({ level, onBack, onNext }: Props) {
                 <span className="mem-value">{v}</span>
               </div>
             ))}
-            {Object.keys(sim.locks).length > 0 && (
-              <div className="locks-row">
-                {Object.entries(sim.locks).map(([m, holder]) => (
-                  <div key={m} className={`lock-cell ${holder !== null ? 'held' : ''}`}>
-                    🔒 {m}: {holder === null ? 'free' : threads[holder].name}
-                  </div>
-                ))}
-              </div>
-            )}
+            {Object.keys(sim.locks).length > 0 && <WaitsForGraph sim={sim} threads={threads} />}
           </div>
           <div className={`invariant-strip ${violated ? 'bad' : ''}`}>
             🛡 {level.invariant.text}

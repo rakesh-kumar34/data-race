@@ -74,6 +74,14 @@ export function step(sim: Sim, threads: ThreadDef[], t: number): Sim {
       next.shared[ins.v] += ins.n;
       th.pc++;
       break;
+    case 'cas':
+      if (next.shared[ins.v] === th.reg) {
+        next.shared[ins.v] = th.reg + ins.n;
+        th.pc++;
+      } else {
+        th.pc = ins.retryTo;
+      }
+      break;
     case 'noop':
       th.pc++;
       break;
@@ -142,6 +150,8 @@ export function instrText(ins: Instr): string {
       return `unlock(${ins.m})`;
     case 'atomic_add':
       return ins.n >= 0 ? `atomic { ${ins.v} += ${ins.n} }` : `atomic { ${ins.v} -= ${-ins.n} }`;
+    case 'cas':
+      return `CAS(${ins.v}: tmp → tmp+${ins.n}) else retry @${ins.retryTo}`;
     case 'noop':
       return ins.label;
   }

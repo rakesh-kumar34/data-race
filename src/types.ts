@@ -8,6 +8,7 @@ export type Instr =
   | { op: 'lock'; m: string }
   | { op: 'unlock'; m: string }
   | { op: 'atomic_add'; v: string; n: number } // shared[v] += n, indivisibly
+  | { op: 'cas'; v: string; n: number; retryTo: number } // if shared[v]==tmp: shared[v]=tmp+n, else jump to retryTo
   | { op: 'noop'; label: string };
 
 export interface ThreadDef {

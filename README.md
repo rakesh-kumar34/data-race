@@ -11,7 +11,7 @@ Each level has two phases:
 
 ![Data Race home screen](docs/home.png)
 
-## The curriculum (5 levels)
+## The curriculum (6 levels)
 
 | # | Level | What it teaches |
 | --- | --- | --- |
@@ -20,12 +20,13 @@ Each level has two phases:
 | 03 | The Vanishing Money | Invariants spanning multiple variables need transaction-sized critical sections |
 | 04 | The Deadly Embrace | Deadlock: Coffman conditions, circular wait, and the global lock-order cure |
 | 05 | Atomic Victory | Hardware atomics dissolve races — and exactly where their power ends |
+| 06 | The Lock-Free Counter | Compare-and-swap retry loops, optimistic concurrency, livelock, and the ABA problem |
 
 ![Scheduling threads mid-game](docs/midgame.png)
 
 ![Fix phase with synchronization budget](docs/fix.png)
 
-![Deadlock achieved](docs/deadlock.png)
+![Deadlock achieved — the waits-for graph shows the cycle](docs/deadlock.png)
 
 ## Why a model checker in a game?
 

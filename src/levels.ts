@@ -281,4 +281,46 @@ export const LEVELS: LevelDef[] = [
     lesson:
       'Atomicity at the right granularity dissolves the race instead of managing it: the three vulnerable steps of level 1 became one indivisible step, so there is no window for interleaving to exploit — and no lock to forget, order, or deadlock on. This is the foundation of lock-free programming: atomic counters, compare-and-swap loops, reference counts. The catch to carry into interviews: hardware atomics cover ONE memory word. The moment your invariant spans two variables (level 3!) or a check-then-act (level 2!), a single atomic instruction can no longer save you — you are back to locks or to CAS-retry designs. Knowing WHICH regime a problem lives in is the staff-level skill.',
   },
+// ---------------------------------------------------------------- L6
+  {
+    id: 'lock-free',
+    name: 'The Lock-Free Counter',
+    subtitle: 'No locks at all — yet unbreakable. Welcome to compare-and-swap.',
+    story:
+      'Level 1\'s counter is back, but the team went lock-free: instead of locking, each thread reads x and then attempts a COMPARE-AND-SWAP — "if x still equals what I read, replace it with my new value; otherwise my snapshot is stale, loop back and re-read." The hardware executes the compare and the swap as one indivisible step (CMPXCHG on x86). Each thread increments twice. Schedule adversarially: you CAN make a CAS fail and force a retry — watch the program counter jump back. What you cannot do is lose an update. When you\'re convinced, run the prover.',
+    walkthrough: [
+      '"tmp = x" takes an optimistic snapshot — no lock is held, anyone can move x meanwhile.',
+      '"CAS(x: tmp → tmp+1)" atomically checks that x STILL equals tmp; if yes, it writes tmp+1. If no, it jumps back to re-read — that is the retry loop.',
+      'A failed CAS is not an error: it is the algorithm noticing the world moved and trying again with fresh data.',
+      'Force a retry: let the other thread complete an increment between a read and its CAS.',
+    ],
+    shared: { x: 0 },
+    threads: [
+      {
+        name: 'Thread A',
+        code: [
+          { op: 'read', v: 'x' },
+          { op: 'cas', v: 'x', n: 1, retryTo: 0 },
+          { op: 'read', v: 'x' },
+          { op: 'cas', v: 'x', n: 1, retryTo: 2 },
+        ],
+      },
+      {
+        name: 'Thread B',
+        code: [
+          { op: 'read', v: 'x' },
+          { op: 'cas', v: 'x', n: 1, retryTo: 0 },
+          { op: 'read', v: 'x' },
+          { op: 'cas', v: 'x', n: 1, retryTo: 2 },
+        ],
+      },
+    ],
+    invariant: { text: 'x == 4 when both threads finish', check: (s) => s.x === 4 },
+    goal: 'verify-safe',
+    breakHint:
+      'Interleave a full increment by one thread between the other\'s read and CAS — the CAS fails and retries with fresh data. Frustrating, isn\'t it? That frustration IS the correctness mechanism.',
+    explainViolation: '',
+    lesson:
+      'This is optimistic concurrency: assume no conflict, detect it atomically, retry on failure — the strategy behind java.util.concurrent.atomic, database optimistic locking, and most lock-free data structures. Three staff-level caveats. LIVELOCK: under heavy contention a CAS loop can retry indefinitely — progress is only guaranteed system-wide (someone\'s CAS succeeds), not per-thread; that is "lock-freedom", weaker than "wait-freedom". THE ABA PROBLEM: CAS checks the VALUE, not the history — if x went 0→1→0 behind your back, your stale snapshot passes the check anyway; harmless for counters, fatal for pointer-based stacks (the fix: tagged/versioned pointers). SCOPE: like all single-word atomics, CAS protects one word — the multi-variable invariants of level 3 are still out of reach. Locks compose across variables; CAS composes across retries.',
+  },
 ];
