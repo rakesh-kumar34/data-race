@@ -30,6 +30,10 @@ Each level has two phases:
 
 ![Deadlock achieved — the waits-for graph shows the cycle](docs/deadlock.png)
 
+## Learning aids
+
+Every level keeps a **Concept notes** panel on screen — the staff-level definitions behind what you're doing (data race, critical section, Coffman conditions, ABA…) — and the home screen links a full **Concurrency Field Guide** collecting all 18 concepts in one browsable page. Lessons also appear in-flow: a briefing before you play, a named diagnosis when you break something, and a production-grade takeaway when your fix is proven.
+
 ## Why a model checker in a game?
 
 Concurrent code cannot be validated by testing the schedules you thought of — the bug is always in the one you didn't. The game makes that lesson mechanical: your fix is only accepted when a breadth-first search over the *entire* state space (every interleaving of every thread, including blocking and deadlocks) finds no violating schedule. When it finds one, you watch it execute. This is a real (small) model checker, the same idea behind TLA+ and SPIN.

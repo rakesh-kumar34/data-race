@@ -1,10 +1,29 @@
 import type { LevelDef } from '../types';
 import { LEVELS } from '../levels';
-import { loadProgress } from '../progress';
+import { useState } from 'react';
+import { loadProgress, resetProgress } from '../progress';
 
-export default function Home({ onPick }: { onPick: (level: LevelDef) => void }) {
+interface HomeProps {
+  onPick: (level: LevelDef) => void;
+  onGuide: () => void;
+}
+
+export default function Home({ onPick, onGuide }: HomeProps) {
+  const [resetArmed, setResetArmed] = useState(false);
+  const [, forceRefresh] = useState(0);
   const progress = loadProgress();
   const totalStars = Object.values(progress).reduce((a, r) => a + r.stars, 0);
+  const anyProgress = Object.keys(progress).length > 0;
+
+  const onReset = () => {
+    if (!resetArmed) {
+      setResetArmed(true);
+      return;
+    }
+    resetProgress();
+    setResetArmed(false);
+    forceRefresh((n) => n + 1);
+  };
 
   return (
     <div className="home">
@@ -21,7 +40,15 @@ export default function Home({ onPick }: { onPick: (level: LevelDef) => void }) 
           and an exhaustive model checker tries <em>every possible schedule</em> to prove you right or replay the one
           that proves you wrong.
         </p>
-        <div className="star-total">⭐ {totalStars} / {LEVELS.length * 3}</div>
+        <div className="home-actions">
+          <div className="star-total">⭐ {totalStars} / {LEVELS.length * 3}</div>
+          <button className="btn guide-btn" onClick={onGuide}>📖 Concurrency field guide</button>
+          {anyProgress && (
+            <button className={`btn tiny reset-btn ${resetArmed ? 'armed' : ''}`} onClick={onReset} onBlur={() => setResetArmed(false)}>
+              {resetArmed ? 'click again to confirm' : '⟲ reset progress'}
+            </button>
+          )}
+        </div>
       </header>
 
       <div className="level-list">
@@ -33,7 +60,7 @@ export default function Home({ onPick }: { onPick: (level: LevelDef) => void }) 
               <div className="level-body">
                 <div className="level-name">
                   {level.name}
-                  {p?.broken && <span className="badge broke">💥 broken</span>}
+                  {p?.broken && p.stars === 0 && <span className="badge broke">💥 broken · fix pending</span>}
                   {p && p.stars > 0 && <span className="badge stars">{'⭐'.repeat(p.stars)}</span>}
                 </div>
                 <div className="level-sub">{level.subtitle}</div>
@@ -45,8 +72,8 @@ export default function Home({ onPick }: { onPick: (level: LevelDef) => void }) 
       </div>
 
       <footer className="home-footer">
-        Concepts you will own by level 5: atomicity · critical sections · TOCTOU · multi-variable invariants ·
-        lock ordering · deadlock (Coffman conditions) · hardware atomics · model checking
+        Concepts you will own by level 6: atomicity · critical sections · TOCTOU · multi-variable invariants ·
+        deadlock &amp; lock ordering · hardware atomics · CAS &amp; lock-free · livelock · the ABA problem · model checking
         <div className="copyright">
           © 2026 <a href="https://rakeshcgk.com">Rakesh Kumar</a> · MIT licensed ·{' '}
           <a href="https://github.com/rakesh-kumar34/data-race">source</a>

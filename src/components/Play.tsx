@@ -14,6 +14,7 @@ import {
 } from '../engine';
 import { saveLevel } from '../progress';
 import WaitsForGraph from './WaitsForGraph';
+import { conceptsForLevel } from '../concepts';
 
 const THREAD_COLORS = ['#f59e0b', '#38bdf8', '#a78bfa'];
 
@@ -156,7 +157,7 @@ export default function Play({ level, onBack, onNext }: Props) {
         kind: 'safe',
         text: `PROVEN SAFE — all ${result.statesExplored.toLocaleString()} reachable states explored; the invariant holds in every one of them. Atomicity leaves the race nowhere to hide.`,
       });
-      saveLevel(level.id, { broken: true, stars: 3, bestCost: 0 });
+      saveLevel(level.id, { stars: 3, bestCost: 0 });
       setPhase('won');
     }, 350);
   };
@@ -203,6 +204,21 @@ export default function Play({ level, onBack, onNext }: Props) {
       )}
 
       <div className="goal-banner">{goalText}</div>
+
+      <details className="notes-panel" open>
+        <summary>📓 Concept notes for this level</summary>
+        <dl>
+          {conceptsForLevel(level.id).map((c) => (
+            <div key={c.term} className="guide-entry">
+              <dt>{c.term}</dt>
+              <dd>{c.def}</dd>
+            </div>
+          ))}
+        </dl>
+        <button className="btn tiny" onClick={() => setPhase('intro')}>
+          re-read the level briefing
+        </button>
+      </details>
 
       <div className="stage">
         <div className="memory-panel">

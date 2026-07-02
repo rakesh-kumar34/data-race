@@ -27,3 +27,7 @@ export function saveLevel(id: string, update: Partial<LevelResult>) {
   };
   localStorage.setItem(KEY, JSON.stringify(all));
 }
+
+export function resetProgress() {
+  localStorage.removeItem(KEY);
+}

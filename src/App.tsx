@@ -3,11 +3,14 @@ import type { LevelDef } from './types';
 import { LEVELS } from './levels';
 import Home from './components/Home';
 import Play from './components/Play';
+import FieldGuide from './components/FieldGuide';
 import './App.css';
 
 export default function App() {
   const [level, setLevel] = useState<LevelDef | null>(null);
+  const [guide, setGuide] = useState(false);
   const idx = level ? LEVELS.findIndex((l) => l.id === level.id) : -1;
+  if (guide) return <FieldGuide onBack={() => setGuide(false)} />;
   return level ? (
     <Play
       key={level.id}
@@ -16,6 +19,6 @@ export default function App() {
       onNext={idx < LEVELS.length - 1 ? () => setLevel(LEVELS[idx + 1]) : null}
     />
   ) : (
-    <Home onPick={setLevel} />
+    <Home onPick={setLevel} onGuide={() => setGuide(true)} />
   );
 }

@@ -718,3 +718,86 @@ code {
     stroke-dashoffset: -20;
   }
 }
+
+/* concept notes + field guide */
+.notes-panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 18px;
+  margin-bottom: 16px;
+}
+.notes-panel summary {
+  cursor: pointer;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--accent-2);
+  user-select: none;
+}
+.notes-panel dl {
+  margin: 6px 0 10px;
+}
+.guide-entry {
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border);
+}
+.guide-entry:last-child {
+  border-bottom: none;
+}
+.guide-entry dt {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text);
+  margin-bottom: 3px;
+}
+.guide-entry dd {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--dim);
+}
+.home-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.guide-btn {
+  border-radius: 999px;
+  font-weight: 700;
+}
+.guide {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 20px 24px 70px;
+}
+.guide-section {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 24px;
+  margin-bottom: 16px;
+}
+.guide-section h3 {
+  margin: 0 0 6px;
+  font-size: 17px;
+}
+.guide-section dl {
+  margin: 0;
+}
+.guide-level {
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 12px;
+  color: var(--accent);
+  letter-spacing: 1px;
+  margin-right: 8px;
+}
+
+.reset-btn {
+  color: var(--dim);
+}
+.reset-btn.armed {
+  border-color: var(--red);
+  color: var(--red);
+}
